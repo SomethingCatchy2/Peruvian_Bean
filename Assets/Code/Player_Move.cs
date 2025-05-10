@@ -12,16 +12,21 @@ public class Player_Move : MonoBehaviour
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
     Rigidbody2D rb;
-    bool isGrounded = false;
+    public bool isGrounded = false;
     public Collider2D groundCheckCollider; // Assign in inspector
     public Animator animator; // Assign in inspector
+    public ParticleSystem dustParticles; // Assign in inspector
 
-    bool wasWalking = false;
+    public bool wasWalking = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         // rb.gravityScale = 0; // Remove this for platformer gravity
+
+        // Make sure particle system is initially stopped
+        if (dustParticles != null)
+            dustParticles.Stop();
     }
 
     void Update()
@@ -33,6 +38,47 @@ public class Player_Move : MonoBehaviour
 
         // Animation logic
         bool isWalking = Mathf.Abs(horizontal) > 0.4f;
+
+        // Handle dust particles - reworked implementation
+        if (dustParticles != null)
+        {
+            // Get particle system main module
+            var main = dustParticles.main;
+            
+            // Handle different states
+            if (isGrounded)
+            {
+                // Dust when walking on ground
+                if (isWalking)
+                {
+                    // Direction based particle emission
+                    var shape = dustParticles.shape;
+                    if (horizontal < 0)
+                    {
+                        shape.position = new Vector3(0.2f, 0, 0); // Offset slightly right when moving left
+                    }
+                    else
+                    {
+                        shape.position = new Vector3(-0.2f, 0, 0); // Offset slightly left when moving right
+                    }
+                    
+                    // Enable emission
+                    if (!dustParticles.isEmitting)
+                    {
+                        dustParticles.Play();
+                    }
+                }
+                else if (dustParticles.isEmitting)
+                {
+                    dustParticles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                }
+            }
+            else if (dustParticles.isEmitting)
+            {
+                // Stop emission but allow particles to fade out naturally
+                dustParticles.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            }
+        }
 
         if (isWalking && !wasWalking)
         {
