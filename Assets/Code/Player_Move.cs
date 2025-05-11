@@ -18,6 +18,13 @@ public class Player_Move : MonoBehaviour
     public ParticleSystem dustParticles; // Assign in inspector
 
     public bool wasWalking = false;
+    
+    // New variables for collectibles
+    private bool nearCollectible = false;
+    public GameObject collectPrompt; // Optional UI element showing "Press Space to collect"
+    
+    // Collectibles inventory
+    private int mushroomsCollected = 0;
 
     void Start()
     {
@@ -27,6 +34,10 @@ public class Player_Move : MonoBehaviour
         // Make sure particle system is initially stopped
         if (dustParticles != null)
             dustParticles.Stop();
+            
+        // Make sure collection prompt is hidden initially
+        if (collectPrompt != null)
+            collectPrompt.SetActive(false);
     }
 
     void Update()
@@ -106,7 +117,8 @@ public class Player_Move : MonoBehaviour
 
         wasWalking = isWalking;
 
-        if (Input.GetButtonDown("Jump") && isGrounded)
+        // Changed from Jump button to Z key
+        if (Input.GetKeyDown(KeyCode.Z) && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
@@ -116,6 +128,14 @@ public class Player_Move : MonoBehaviour
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         else if (horizontal < -0.2f)
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        
+        // Handle mushroom collection with X key (changed from Space)
+        if (nearCollectible && Input.GetKeyDown(KeyCode.X))
+        {
+            // Collection is handled by the CollectibleMushroom script
+            // This is just for debug purposes
+            Debug.Log("Attempting to collect nearby mushroom");
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -125,6 +145,12 @@ public class Player_Move : MonoBehaviour
         if (other.CompareTag("ground"))
         {
             isGrounded = true;
+        }
+        else if (other.CompareTag("collectable"))
+        {
+            nearCollectible = true;
+            if (collectPrompt != null)
+                collectPrompt.SetActive(true);
         }
     }
 
@@ -136,5 +162,19 @@ public class Player_Move : MonoBehaviour
         {
             isGrounded = false;
         }
+        else if (other.CompareTag("collectable"))
+        {
+            nearCollectible = false;
+            if (collectPrompt != null)
+                collectPrompt.SetActive(false);
+        }
+    }
+    
+    // Add this method to track mushroom collection
+    public void AddMushroom()
+    {
+        mushroomsCollected++;
+        Debug.Log("Mushrooms collected: " + mushroomsCollected);
+        // You can add UI updates or other game logic here
     }
 }
