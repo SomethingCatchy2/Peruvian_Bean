@@ -75,7 +75,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8084885984171567893}
   m_Father: {fileID: 8912804171359907086}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1839735485 &602947478100336519
@@ -230,7 +231,81 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
---- !u!114 &2185399326259019449
+--- !u!1001 &4736676084434831602
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 969647183003041682}
+    m_Modifications:
+    - target: {fileID: 951844405007084981, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 951844405007084981, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4572494910549825309, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_Name
+      value: Collectable Mushroom
+      objectReference: {fileID: 0}
+    - target: {fileID: 8647977882775599458, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+--- !u!4 &8084885984171567893 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3571149145287107559, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+  m_PrefabInstance: {fileID: 4736676084434831602}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1697841694017157392
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
