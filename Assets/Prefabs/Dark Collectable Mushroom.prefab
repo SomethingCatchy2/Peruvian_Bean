@@ -8,6 +8,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1605018178426672136, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: itemId
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -1605018178426672136, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: itemName
+      value: 'High Hatted Dark Glow Shrom '
+      objectReference: {fileID: 0}
     - target: {fileID: 951844405007084981, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -64,6 +72,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3685254489692136826, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_Name
+      value: Black Mushroom Break Par
+      objectReference: {fileID: 0}
+    - target: {fileID: 4196040783789678164, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4196040783789678164, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
       value: 0
@@ -81,7 +97,8 @@ PrefabInstance:
       value: Dark Collectable Mushroom
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2147832016460460344, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}

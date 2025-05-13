@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BackRunes1_0
+      name: BackRunes1
       rect:
         serializedVersion: 2
         x: 0
@@ -121,15 +121,15 @@ TextureImporter:
         width: 8
         height: 8
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 05f94c6aabd1f8e20800000000000000
-      internalID: 3354932934913335120
+      spriteID: 173a25fc032fc481bad0032ba5b120c4
+      internalID: -272412224
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 495eabf6ca8cc5dad8d56f0ec4ed0da9
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BackRunes1_0: 3354932934913335120
+      BackRunes1: -272412224
+      BackRunes1_2: -1641992950
+      BackRunes1_3: 2006629284
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

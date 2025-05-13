@@ -171,7 +171,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -5042,6 +5042,7 @@ GameObject:
   - component: {fileID: 951844405007084981}
   - component: {fileID: 3607050313245856923}
   - component: {fileID: 4604086453248314416}
+  - component: {fileID: -1605018178426672136}
   m_Layer: 0
   m_Name: Collectable Mushroom
   m_TagString: collectable
@@ -5128,7 +5129,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4572494910549825309}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42f8d931673d48f0182a087ab5e87e4f, type: 3}
   m_Name: 
@@ -5171,3 +5172,25 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &-1605018178426672136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4572494910549825309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f97719b2b16f33391b91c6a79a9ece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemId: 1
+  itemName: Yellow Glow Shrom
+  icon: {fileID: 1715546004, guid: 522c5fce3a6c8c47d974fa218032c7d1, type: 3}
+  requireKeyPress: 1
+  collectKey: 120
+  collectSound: {fileID: 0}
+  collectParticles: {fileID: 4196040783789678164}
+  onCollected:
+    m_PersistentCalls:
+      m_Calls: []

@@ -25,6 +25,12 @@ public class Player_Move : MonoBehaviour
     
     // Collectibles inventory
     private int mushroomsCollected = 0;
+    
+    // Coyote time implementation
+    [Header("Coyote Time")]
+    public float coyoteTime = 0.15f;  // How long the player can jump after leaving a platform
+    private float coyoteTimeCounter;   // Timer to track coyote time
+    private bool hasJumped = false;    // Flag to prevent double jumps during coyote time
 
     void Start()
     {
@@ -117,10 +123,23 @@ public class Player_Move : MonoBehaviour
 
         wasWalking = isWalking;
 
-        // Changed from Jump button to Z key
-        if (Input.GetKeyDown(KeyCode.Z) && isGrounded)
+        // Coyote time logic
+        if (isGrounded)
+        {
+            coyoteTimeCounter = coyoteTime;
+            hasJumped = false;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+
+        // Changed from Jump button to Z key with coyote time
+        if (Input.GetKeyDown(KeyCode.Z) && (coyoteTimeCounter > 0f) && !hasJumped)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            hasJumped = true;
+            coyoteTimeCounter = 0f; // Immediately end coyote time after jumping
         }
 
         // Optional: flip sprite if moving right (since sprites face left)
@@ -161,6 +180,8 @@ public class Player_Move : MonoBehaviour
         if (other.CompareTag("ground"))
         {
             isGrounded = false;
+            // Coyote time starts immediately when leaving the ground
+            coyoteTimeCounter = coyoteTime;
         }
         else if (other.CompareTag("collectable"))
         {
