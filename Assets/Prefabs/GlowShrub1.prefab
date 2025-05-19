@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 369757676938342661}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 19.5, y: -8.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5097,7 +5097,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemId: 3
-  itemName: Glow Shrom
+  itemName: Glow Shrub
   icon: {fileID: 7303304430059256826, guid: 1b2570210c590c785a4f5da2ba9b7a1a, type: 3}
   requireKeyPress: 1
   collectKey: 120
