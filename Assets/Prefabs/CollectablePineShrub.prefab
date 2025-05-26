@@ -96,5 +96,91 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 8636280344130226747, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1453935417848000973, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8538574818032912266}
   m_SourcePrefab: {fileID: 100100000, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+--- !u!1 &1508542805520070876 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1453935417848000973, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+  m_PrefabInstance: {fileID: 54607516789557521}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8538574818032912266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508542805520070876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_Priority: 0
+  m_ComponentVersion: 5
+  m_HasRenderer: 1
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_AlphaCutoff: 0.1
+  m_ApplyToSortingLayers: 00000000
+  m_ShapePath:
+  - {x: 0.009783387, y: -0.50508565, z: 0}
+  - {x: 0.0023958944, y: -0.26284793, z: 0}
+  - {x: -0.1159785, y: -0.25557435, z: 0}
+  - {x: -0.14010404, y: -0.36058766, z: 0}
+  - {x: -0.2669299, y: -0.50136316, z: 0}
+  - {x: -0.37166923, y: -0.49287075, z: 0}
+  - {x: -0.2207052, y: -0.30359343, z: 0}
+  - {x: -0.24405394, y: 0.010489315, z: 0}
+  - {x: -0.388041, y: -0.14281763, z: 0}
+  - {x: -0.50655794, y: -0.105233185, z: 0}
+  - {x: -0.3712473, y: 0.10870951, z: 0}
+  - {x: -0.38836902, y: 0.36212862, z: 0}
+  - {x: -0.25254807, y: 0.37037426, z: 0}
+  - {x: -0.23242886, y: 0.4962774, z: 0}
+  - {x: -0.13718386, y: 0.50964177, z: 0}
+  - {x: -0.12720297, y: 0.3885617, z: 0}
+  - {x: -0.016002826, y: 0.3601872, z: 0}
+  - {x: -0.003834501, y: 0.25935122, z: 0}
+  - {x: 0.12389827, y: 0.2479398, z: 0}
+  - {x: 0.12136531, y: 0.14585683, z: 0}
+  - {x: 0.1112644, y: -0.1270117, z: 0}
+  - {x: 0.2396868, y: -0.12953237, z: 0}
+  - {x: 0.2501176, y: -0.24026191, z: 0}
+  - {x: 0.121753305, y: -0.25850824, z: 0}
+  - {x: 0.12453729, y: -0.5052006, z: 0}
+  m_ShapePathHash: 1893818815
+  m_InstanceId: 0
+  m_ShadowShape2DComponent: {fileID: 0}
+  m_ShadowShape2DProvider:
+    rid: -2
+  m_ShadowCastingSource: 1
+  m_ShadowMesh:
+    m_Mesh: {fileID: 0}
+    m_LocalBounds:
+      m_Center: {x: -0.12822017, y: 0.002220571, z: 0}
+      m_Extent: {x: 0.37833777, y: 0.5074212, z: 0}
+    m_EdgeProcessing: 1
+    m_TrimEdge: 0.05
+    m_FlipX: 0
+    m_FlipY: 0
+    m_InitialTrim: 0
+  m_CastingOption: 2
+  m_PreviousTrimEdge: 0.05
+  m_PreviousEdgeProcessing: 1
+  m_PreviousShadowCastingSource: 1
+  m_PreviousShadowShape2DSource: {fileID: 4579064603095757549}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!212 &4579064603095757549 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4561613990854704124, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+  m_PrefabInstance: {fileID: 54607516789557521}
+  m_PrefabAsset: {fileID: 0}

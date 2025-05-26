@@ -134,8 +134,9 @@ public class Player_Move : MonoBehaviour
             coyoteTimeCounter -= Time.deltaTime;
         }
 
-        // Changed from Jump button to Z key with coyote time
-        if (Input.GetKeyDown(KeyCode.Z) && (coyoteTimeCounter > 0f) && !hasJumped)
+        // Changed from Jump button to Z key with coyote time, add Switch Pro B button support
+        if ((Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.JoystickButton1))
+            && (coyoteTimeCounter > 0f) && !hasJumped)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             hasJumped = true;
@@ -148,8 +149,8 @@ public class Player_Move : MonoBehaviour
         else if (horizontal < -0.2f)
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         
-        // Handle mushroom collection with X key (changed from Space)
-        if (nearCollectible && Input.GetKeyDown(KeyCode.X))
+        // Handle mushroom collection with X key (changed from Space), add Switch Pro A button support
+        if (nearCollectible && (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.JoystickButton0)))
         {
             // Collection is handled by the CollectibleMushroom script
             // This is just for debug purposes
