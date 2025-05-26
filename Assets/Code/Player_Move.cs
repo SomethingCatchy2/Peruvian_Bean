@@ -148,14 +148,6 @@ public class Player_Move : MonoBehaviour
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         else if (horizontal < -0.2f)
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-        
-        // Handle mushroom collection with X key (changed from Space), add Switch Pro A button support
-        if (nearCollectible && (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.JoystickButton0)))
-        {
-            // Collection is handled by the CollectibleMushroom script
-            // This is just for debug purposes
-            Debug.Log("Attempting to collect nearby mushroom");
-        }
     }
 
     void OnTriggerEnter2D(Collider2D other)

@@ -37,8 +37,9 @@ public class Collectible : MonoBehaviour
     
     protected virtual void Update()
     {
-        // Handle collection input
-        if (playerInRange && requireKeyPress && Input.GetKeyDown(collectKey))
+        // Handle collection input (X key or Pro A button)
+        if (playerInRange && requireKeyPress 
+            && (Input.GetKeyDown(collectKey) || Input.GetKeyDown(KeyCode.JoystickButton0)))
         {
             Collect();
         }

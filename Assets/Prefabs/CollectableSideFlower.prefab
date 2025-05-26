@@ -12,6 +12,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: CollectableSideFlower
       objectReference: {fileID: 0}
+    - target: {fileID: 1540405046451514191, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1540405046451514191, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1540405046451514191, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1540405046451514191, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1540405046451514191, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1540405046451514191, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: icon
       value: 
@@ -23,6 +47,18 @@ PrefabInstance:
     - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: itemName
       value: Hanging Glow Flower
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788202181526197435, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: ShapeModule.m_Position.x
+      value: -0.0009480389
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788202181526197435, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: ShapeModule.m_Position.y
+      value: 0.39636874
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788202181526197435, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: ShapeModule.m_Rotation.z
+      value: 179.95709
       objectReference: {fileID: 0}
     - target: {fileID: 4561613990854704124, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: m_Sprite

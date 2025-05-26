@@ -27,8 +27,8 @@ public class CollectibleMushroom : MonoBehaviour
     
     void Update()
     {
-        // Check if player is in range and pressing X key to collect (changed from Space)
-        if (playerInRange && Input.GetKeyDown(KeyCode.X))
+        // Check if player is in range and pressing X or Pro A button
+        if (playerInRange && (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.JoystickButton0)))
         {
             Collect();
         }
