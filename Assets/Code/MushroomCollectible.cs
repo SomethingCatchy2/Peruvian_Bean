@@ -5,7 +5,7 @@ public class MushroomCollectible : Collectible
     public CollectibleData mushroomData;
     public bool isHealingMushroom = false;
     public int healAmount = 0;
-    
+     
     protected override void Start()
     {
         // Inherit basic setup from parent

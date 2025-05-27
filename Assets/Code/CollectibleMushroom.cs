@@ -11,7 +11,7 @@ public class CollectibleMushroom : MonoBehaviour
     public ParticleSystem collectParticles; // Add particle system for collection effect
     
     void Start()
-    {
+    { 
         // Make sure the collider is set as trigger and properly tagged
         Collider2D col = GetComponent<Collider2D>();
         if (col != null)

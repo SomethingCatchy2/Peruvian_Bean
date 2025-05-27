@@ -10,7 +10,7 @@ using System;
 public class Player_Move : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public float jumpForce = 7f;
+    public float jumpForce = 8.7f;
     Rigidbody2D rb;
     public bool isGrounded = false;
     public Collider2D groundCheckCollider; // Assign in inspector
@@ -20,7 +20,7 @@ public class Player_Move : MonoBehaviour
     public bool wasWalking = false;
     
     // New variables for collectibles
-    private bool nearCollectible = false;
+    public bool nearCollectible = false;
     public GameObject collectPrompt; // Optional UI element showing "Press Space to collect"
     
     // Collectibles inventory
@@ -29,8 +29,18 @@ public class Player_Move : MonoBehaviour
     // Coyote time implementation
     [Header("Coyote Time")]
     public float coyoteTime = 0.15f;  // How long the player can jump after leaving a platform
-    private float coyoteTimeCounter;   // Timer to track coyote time
-    private bool hasJumped = false;    // Flag to prevent double jumps during coyote time
+    public float coyoteTimeCounter;   // Timer to track coyote time
+    public bool hasJumped = false;    // Flag to prevent double jumps during coyote time
+
+    [Header("Jump Modifiers")]
+    public float fallMultiplier = 2f;       // Multiplier for faster fall
+    public float lowJumpMultiplier = 2f;    // Multiplier for short hop
+
+    [Header("Footstep Audio")]
+    public AudioClip[] footstepClips;          // assign your step sounds here
+    public AudioSource footstepAudioSource;    // optional, falls back to PlayClipAtPoint
+    public float footstepBaseInterval = 0.5f;  // seconds per step at full speed
+    private float footstepTimer = 0f;
 
     void Start()
     {
@@ -143,11 +153,46 @@ public class Player_Move : MonoBehaviour
             coyoteTimeCounter = 0f; // Immediately end coyote time after jumping
         }
 
+        // Variable jump height: if falling, speed up gravity; if ascending & key released, apply low‐jump gravity
+        {
+            Vector2 vel = rb.linearVelocity;
+            if (vel.y < 0f)
+            {
+                vel += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1f) * Time.deltaTime;
+            }
+            else if (vel.y > 0f && !(Input.GetKey(KeyCode.Z) || Input.GetKey(KeyCode.JoystickButton1)))
+            {
+                vel += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1f) * Time.deltaTime;
+            }
+            rb.linearVelocity = vel;
+        }
+
         // Optional: flip sprite if moving right (since sprites face left)
         if (horizontal > 0.2f)
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         else if (horizontal < -0.2f)
             transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
+        // Footstep sounds when moving on ground
+        if (isGrounded && Mathf.Abs(horizontal) > 0.1f)
+        {
+            footstepTimer -= Time.deltaTime;
+            if (footstepTimer <= 0f && footstepClips.Length > 0)
+            {
+                AudioClip clip = footstepClips[UnityEngine.Random.Range(0, footstepClips.Length)];
+                if (footstepAudioSource != null)
+                    footstepAudioSource.PlayOneShot(clip);
+                else
+                    AudioSource.PlayClipAtPoint(clip, transform.position);
+
+                // shorter interval when faster
+                footstepTimer = footstepBaseInterval / Mathf.Abs(horizontal);
+            }
+        }
+        else
+        {
+            footstepTimer = 0f;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)

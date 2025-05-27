@@ -7,7 +7,7 @@ public class CollectibleData : ScriptableObject
     public string displayName;         // Display name
     public Sprite icon;                // Icon
     public string description;         // Description
-    
+     
     [Header("Properties")]
     public CollectibleType type;       // Category or collectible type
     public int maxStackSize = 1;       // How many can stack in inventory

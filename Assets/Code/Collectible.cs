@@ -20,7 +20,7 @@ public class Collectible : MonoBehaviour
     
     [Header("Events")]
     public UnityEvent onCollected;     // Custom actions when collected
-    
+     
     protected virtual void Start()
     {
         // Ensure collider as trigger
