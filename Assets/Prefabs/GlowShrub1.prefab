@@ -5101,8 +5101,11 @@ MonoBehaviour:
   icon: {fileID: 7303304430059256826, guid: 1b2570210c590c785a4f5da2ba9b7a1a, type: 3}
   requireKeyPress: 1
   collectKey: 120
+  useMultipleControllerButtons: 1
+  collectionButtonIndices: 000000000100000002000000030000000f000000
   collectSound: {fileID: 0}
   collectParticles: {fileID: 477789292436918556}
+  healAmount: 2
   onCollected:
     m_PersistentCalls:
       m_Calls: []

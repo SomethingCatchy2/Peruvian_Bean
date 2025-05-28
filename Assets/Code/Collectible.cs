@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections.Generic;
 
 public class Collectible : MonoBehaviour
 {
@@ -11,12 +12,22 @@ public class Collectible : MonoBehaviour
     [Header("Collection Settings")]
     public bool requireKeyPress = true;  // False collects on touch
     public KeyCode collectKey = KeyCode.X;
+    
+    [Header("Controller Settings")]
+    [Tooltip("Try different button configurations for collection")]
+    public bool useMultipleControllerButtons = true;
+    [Tooltip("Add specific controller buttons that should trigger collection")]
+    public List<int> collectionButtonIndices = new List<int> { 0, 1, 2, 3, 15 }; // Try B, A, X, Y, and ZR buttons
+    
     protected bool playerInRange = false;
     protected GameObject playerObject;
 
     [Header("Effects")]
     public AudioClip collectSound;
     public ParticleSystem collectParticles;
+    
+    [Header("Healing")]
+    public float healAmount = 0f;  // amount to heal player on collect (default 0)
     
     [Header("Events")]
     public UnityEvent onCollected;     // Custom actions when collected
@@ -37,11 +48,29 @@ public class Collectible : MonoBehaviour
     
     protected virtual void Update()
     {
-        // Handle collection input (X key or Pro A button)
-        if (playerInRange && requireKeyPress 
-            && (Input.GetKeyDown(collectKey) || Input.GetKeyDown(KeyCode.JoystickButton0)))
+        // Handle collection input with expanded controller support
+        if (playerInRange && requireKeyPress)
         {
-            Collect();
+            bool buttonPressed = Input.GetKeyDown(collectKey);
+            
+            // Check multiple controller buttons if enabled
+            if (!buttonPressed && useMultipleControllerButtons)
+            {
+                foreach (int buttonIndex in collectionButtonIndices)
+                {
+                    if (Input.GetKeyDown((KeyCode)(KeyCode.JoystickButton0 + buttonIndex)))
+                    {
+                        buttonPressed = true;
+                        Debug.Log($"Collection triggered by controller button {buttonIndex}");
+                        break;
+                    }
+                }
+            }
+            
+            if (buttonPressed)
+            {
+                Collect();
+            }
         }
     }
     
@@ -77,6 +106,19 @@ public class Collectible : MonoBehaviour
         
         // Add to player's inventory (will be handled by inventory system in the future)
         AddToInventory();
+        
+        // Heal or damage the player if applicable
+        if (playerObject != null && healAmount != 0f)
+        {
+            var ph = playerObject.GetComponent<PlayerHealth>();
+            if (ph != null)
+            {
+                if (healAmount > 0f)
+                    ph.Heal(healAmount);
+                else
+                    ph.TakeDamage(-healAmount);
+            }
+        }
         
         // Trigger any custom events
         onCollected?.Invoke();

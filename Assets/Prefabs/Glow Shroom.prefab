@@ -36,10 +36,18 @@ PrefabInstance:
       propertyPath: itemName
       value: Glow Shroom
       objectReference: {fileID: 0}
+    - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: healAmount
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4561613990854704124, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 1715546004, guid: 522c5fce3a6c8c47d974fa218032c7d1, type: 3}
+    - target: {fileID: 4561613990854704124, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
     - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

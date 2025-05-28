@@ -12,7 +12,10 @@ public class CollectibleData : ScriptableObject
     public CollectibleType type;       // Category or collectible type
     public int maxStackSize = 1;       // How many can stack in inventory
     public bool isConsumable = false;  // Whether it can be used/consumed
-    
+
+    // new healing amount when collected (default 0 = no heal)
+    public float healAmount = 0f;
+
     // Add any other common properties here
 }
 

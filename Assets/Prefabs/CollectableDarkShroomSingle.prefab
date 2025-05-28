@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8720894029558523611
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1453935417848000973, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_Name
+      value: CollectableDarkShroomSingle
+      objectReference: {fileID: 0}
+    - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: icon
+      value: 
+      objectReference: {fileID: 1745429008, guid: 522c5fce3a6c8c47d974fa218032c7d1, type: 3}
+    - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: itemId
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: itemName
+      value: Wide Capped Darkshroom
+      objectReference: {fileID: 0}
+    - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: healAmount
+      value: -2.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788202181526197435, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788202181526197435, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2788202181526197435, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4561613990854704124, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1745429008, guid: 522c5fce3a6c8c47d974fa218032c7d1, type: 3}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6511570070677252165, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects:
+    - {fileID: 8636280344130226747, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1453935417848000973, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1402919683924007644}
+  m_SourcePrefab: {fileID: 100100000, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+--- !u!1 &7866588316254689046 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1453935417848000973, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+  m_PrefabInstance: {fileID: 8720894029558523611}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1402919683924007644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7866588316254689046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f381431695de199e187fc80601598eb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePerSecond: 0.5
+  damageInterval: 1
+  destroyOnContact: 0
+  damageSource: Unknown
