@@ -6,6 +6,7 @@ public static class GlobalVolumeManager
 {
     private static Volume globalVolume;
     private static VolumeProfile defaultProfileAsset;
+    private static VolumeProfile sylodasticProfileAsset;
 
     static GlobalVolumeManager()
     {
@@ -20,9 +21,12 @@ public static class GlobalVolumeManager
         {
             defaultProfileAsset = globalVolume.profile;
         }
-        else
+
+        // Load the Sylodastic profile from Resources
+        sylodasticProfileAsset = Resources.Load<VolumeProfile>("SylodasticProfile");
+        if (sylodasticProfileAsset == null)
         {
-            Debug.LogWarning("No global Volume with 'isGlobal=true' found in scene. Default profile cannot be cached.");
+            Debug.LogWarning("Sylodastic VolumeProfile not found in Resources folder");
         }
     }
 
@@ -38,36 +42,33 @@ public static class GlobalVolumeManager
             }
         }
 
-        if (string.IsNullOrEmpty(profileName))
+        switch (profileName.ToLower())
         {
-            Debug.LogWarning("Profile name cannot be null or empty.");
-            return;
-        }
-
-        if (profileName.ToLower() == "default")
-        {
-            if (defaultProfileAsset != null)
-            {
-                globalVolume.profile = defaultProfileAsset;
-                Debug.Log("GlobalVolumeManager: Restored default profile asset.");
-            }
-            else
-            {
-                Debug.LogWarning("Default profile asset is null. Cannot restore.");
-            }
-        }
-        else
-        {
-            VolumeProfile loadedProfile = Resources.Load<VolumeProfile>(profileName);
-            if (loadedProfile != null)
-            {
-                globalVolume.profile = loadedProfile;
-                Debug.Log($"GlobalVolumeManager: Switched to '{profileName}' profile asset.");
-            }
-            else
-            {
-                Debug.LogWarning($"VolumeProfile '{profileName}' not found in Resources folder.");
-            }
+            case "sylodastic":
+                if (sylodasticProfileAsset != null)
+                {
+                    globalVolume.profile = sylodasticProfileAsset;
+                    Debug.Log("GlobalVolumeManager: Switched to Sylodastic profile asset.");
+                }
+                else
+                {
+                    Debug.LogWarning("Sylodastic profile asset is null.");
+                }
+                break;
+            case "default":
+                if (defaultProfileAsset != null)
+                {
+                    globalVolume.profile = defaultProfileAsset;
+                    Debug.Log("GlobalVolumeManager: Restored default profile asset.");
+                }
+                else
+                {
+                    Debug.LogWarning("Default profile asset is null.");
+                }
+                break;
+            default:
+                Debug.LogWarning($"Unknown profile: {profileName}");
+                break;
         }
     }
 }

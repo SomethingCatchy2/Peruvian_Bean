@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: sylodasticDuration
-      value: 1
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: volumeProfileNameOnCollect

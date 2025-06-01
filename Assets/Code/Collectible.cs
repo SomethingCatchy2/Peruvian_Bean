@@ -33,9 +33,9 @@ public class Collectible : MonoBehaviour
     [Header("Events")]
     public UnityEvent onCollected;     // Custom actions when collected
 
-    [Header("Volume Profile Effect")] // Changed header
-    public string volumeProfileNameOnCollect = ""; // New field: name of the profile to apply
-    public float volumeProfileDuration = 0f; // New field: duration for the profile effect
+    [Header("Sylodastic Effect")]
+    public bool isSylodastic = false; // If true, triggers Sylodastic global volume effect
+    public float sylodasticDuration = 60f; // Duration in seconds for Sylodastic effect
      
     protected virtual void Start()
     {
@@ -113,10 +113,13 @@ public class Collectible : MonoBehaviour
             }
         }
 
-        // If a volume profile is specified, trigger the effect
-        if (!string.IsNullOrEmpty(volumeProfileNameOnCollect) && volumeProfileDuration > 0)
+        // If Sylodastic, trigger global volume profile switch
+        if (isSylodastic)
         {
-            StartCoroutine(ApplyTemporaryVolumeProfile(volumeProfileNameOnCollect, volumeProfileDuration));
+            // Old line: StartCoroutine(SwitchToSylodasticProfile());
+            GameObject hostObject = new GameObject("SylodasticEffectCoroutineHost");
+            CoroutineHost hostComponent = hostObject.AddComponent<CoroutineHost>();
+            hostComponent.Run(SwitchToSylodasticProfile()); // Pass the IEnumerator from our method
         }
         
         // Trigger any custom events
@@ -126,12 +129,12 @@ public class Collectible : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // Coroutine to switch global volume profile and revert after duration
-    protected virtual System.Collections.IEnumerator ApplyTemporaryVolumeProfile(string profileName, float duration)
+    // Coroutine to switch global volume profile to Sylodastic and revert after duration
+    protected virtual System.Collections.IEnumerator SwitchToSylodasticProfile()
     {
-        Debug.Log($"Collectible: Switching to {profileName} profile for {duration} seconds.");
-        GlobalVolumeManager.SetProfile(profileName);
-        yield return new WaitForSeconds(duration);
+        Debug.Log("Collectible: Switching to Sylodastic profile.");
+        GlobalVolumeManager.SetProfile("Sylodastic");
+        yield return new WaitForSeconds(sylodasticDuration);
         Debug.Log("Collectible: Reverting to Default profile.");
         GlobalVolumeManager.SetProfile("Default");
     }
@@ -158,5 +161,20 @@ public class Collectible : MonoBehaviour
         // This will be replaced by inventory system later
         // For now just log that we collected the item
         Debug.Log($"Collected: {itemName} (ID: {itemId})");
+    }
+}
+
+// New helper class for running coroutines on a temporary, persistent host
+public class CoroutineHost : MonoBehaviour
+{
+    public void Run(System.Collections.IEnumerator routineToExecute)
+    {
+        StartCoroutine(ExecuteThenDestroy(routineToExecute));
+    }
+
+    private System.Collections.IEnumerator ExecuteThenDestroy(System.Collections.IEnumerator routineToExecute)
+    {
+        yield return StartCoroutine(routineToExecute);
+        Destroy(gameObject); // Destroy the host GameObject after the routine is done
     }
 }
