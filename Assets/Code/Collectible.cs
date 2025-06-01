@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 using System.Collections.Generic;
 
 public class Collectible : MonoBehaviour
@@ -31,6 +32,10 @@ public class Collectible : MonoBehaviour
     
     [Header("Events")]
     public UnityEvent onCollected;     // Custom actions when collected
+
+    [Header("Volume Profile Effect")] // Changed header
+    public string volumeProfileNameOnCollect = ""; // New field: name of the profile to apply
+    public float volumeProfileDuration = 0f; // New field: duration for the profile effect
      
     protected virtual void Start()
     {
@@ -48,25 +53,13 @@ public class Collectible : MonoBehaviour
     
     protected virtual void Update()
     {
-        // Handle collection input with expanded controller support
         if (playerInRange && requireKeyPress)
         {
-            bool buttonPressed = Input.GetKeyDown(collectKey);
-            
-            // Check multiple controller buttons if enabled
-            if (!buttonPressed && useMultipleControllerButtons)
-            {
-                foreach (int buttonIndex in collectionButtonIndices)
-                {
-                    if (Input.GetKeyDown((KeyCode)(KeyCode.JoystickButton0 + buttonIndex)))
-                    {
-                        buttonPressed = true;
-                        Debug.Log($"Collection triggered by controller button {buttonIndex}");
-                        break;
-                    }
-                }
-            }
-            
+            // Collect on X key or Y button (JoystickButton3)
+            bool buttonPressed = Input.GetKeyDown(collectKey) || Input.GetKeyDown(KeyCode.JoystickButton3);
+            if (buttonPressed)
+                Debug.Log("Collection triggered by Y button (JoystickButton3)");
+
             if (buttonPressed)
             {
                 Collect();
@@ -119,12 +112,28 @@ public class Collectible : MonoBehaviour
                     ph.TakeDamage(-healAmount);
             }
         }
+
+        // If a volume profile is specified, trigger the effect
+        if (!string.IsNullOrEmpty(volumeProfileNameOnCollect) && volumeProfileDuration > 0)
+        {
+            StartCoroutine(ApplyTemporaryVolumeProfile(volumeProfileNameOnCollect, volumeProfileDuration));
+        }
         
         // Trigger any custom events
         onCollected?.Invoke();
         
         // Remove the collectible
         Destroy(gameObject);
+    }
+
+    // Coroutine to switch global volume profile and revert after duration
+    protected virtual System.Collections.IEnumerator ApplyTemporaryVolumeProfile(string profileName, float duration)
+    {
+        Debug.Log($"Collectible: Switching to {profileName} profile for {duration} seconds.");
+        GlobalVolumeManager.SetProfile(profileName);
+        yield return new WaitForSeconds(duration);
+        Debug.Log("Collectible: Reverting to Default profile.");
+        GlobalVolumeManager.SetProfile("Default");
     }
     
     protected virtual void PlayCollectionEffects()

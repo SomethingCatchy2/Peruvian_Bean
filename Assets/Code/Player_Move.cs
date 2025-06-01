@@ -301,16 +301,15 @@ public class Player_Move : MonoBehaviour
             coyoteTimeCounter -= Time.deltaTime;
         }
 
-        // Updated jump button to use button 7
-        bool jumpButtonPressed = Input.GetKeyDown(KeyCode.Z) || 
-                                Input.GetKeyDown((KeyCode)(KeyCode.JoystickButton0 + jumpButtonIndex)); 
-        
-        if (jumpButtonPressed && (coyoteTimeCounter > 0f) && !hasJumped)
+        // Hard-code B button (JoystickButton1) for jump
+        bool jumpButtonPressed = Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.JoystickButton0);
+
+        if (jumpButtonPressed && coyoteTimeCounter > 0f && !hasJumped)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             hasJumped = true;
-            coyoteTimeCounter = 0f; // Immediately end coyote time after jumping
-            Debug.Log($"Jump executed using button {jumpButtonIndex}");
+            coyoteTimeCounter = 0f;
+            Debug.Log("Jump executed using B or A button (JoystickButton0) I don't know why but it works for both. : ()"); 
         }
 
         // Variable jump height: if falling, speed up gravity; if ascending & key released, apply low‐jump gravity
@@ -321,7 +320,7 @@ public class Player_Move : MonoBehaviour
                 vel += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1f) * Time.deltaTime;
             }
             else if (vel.y > 0f && !(Input.GetKey(KeyCode.Z) || 
-                                     Input.GetKey((KeyCode)(KeyCode.JoystickButton0 + jumpButtonIndex))))
+                                     Input.GetKey(KeyCode.JoystickButton0))) // JoystickButton0 is usually A button
             {
                 vel += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1f) * Time.deltaTime;
             }
