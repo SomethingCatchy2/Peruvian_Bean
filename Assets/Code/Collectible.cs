@@ -116,10 +116,7 @@ public class Collectible : MonoBehaviour
         // If Sylodastic, trigger global volume profile switch
         if (isSylodastic)
         {
-            // Old line: StartCoroutine(SwitchToSylodasticProfile());
-            GameObject hostObject = new GameObject("SylodasticEffectCoroutineHost");
-            CoroutineHost hostComponent = hostObject.AddComponent<CoroutineHost>();
-            hostComponent.Run(SwitchToSylodasticProfile()); // Pass the IEnumerator from our method
+            GlobalVolumeManager.SetProfileTemporary("Sylodastic", sylodasticDuration);
         }
         
         // Trigger any custom events
@@ -129,16 +126,6 @@ public class Collectible : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // Coroutine to switch global volume profile to Sylodastic and revert after duration
-    protected virtual System.Collections.IEnumerator SwitchToSylodasticProfile()
-    {
-        Debug.Log("Collectible: Switching to Sylodastic profile.");
-        GlobalVolumeManager.SetProfile("Sylodastic");
-        yield return new WaitForSeconds(sylodasticDuration);
-        Debug.Log("Collectible: Reverting to Default profile.");
-        GlobalVolumeManager.SetProfile("Default");
-    }
-    
     protected virtual void PlayCollectionEffects()
     {
         // Sound
@@ -161,20 +148,5 @@ public class Collectible : MonoBehaviour
         // This will be replaced by inventory system later
         // For now just log that we collected the item
         Debug.Log($"Collected: {itemName} (ID: {itemId})");
-    }
-}
-
-// New helper class for running coroutines on a temporary, persistent host
-public class CoroutineHost : MonoBehaviour
-{
-    public void Run(System.Collections.IEnumerator routineToExecute)
-    {
-        StartCoroutine(ExecuteThenDestroy(routineToExecute));
-    }
-
-    private System.Collections.IEnumerator ExecuteThenDestroy(System.Collections.IEnumerator routineToExecute)
-    {
-        yield return StartCoroutine(routineToExecute);
-        Destroy(gameObject); // Destroy the host GameObject after the routine is done
     }
 }

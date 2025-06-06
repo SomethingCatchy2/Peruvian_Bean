@@ -1,12 +1,24 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using System.Collections;
 
 public static class GlobalVolumeManager
 {
     private static Volume globalVolume;
     private static VolumeProfile defaultProfileAsset;
     private static VolumeProfile sylodasticProfileAsset;
+
+    // For blending
+    private static Volume blendVolume;
+    private static Coroutine currentBlendCoroutine;
+    private static GameObject blendVolumeGO;
+    private static float blendDuration = 1.0f; // seconds
+
+    // For temporary profile switching
+    private static Coroutine tempProfileCoroutine;
+    private static string lastProfileName = "default";
+    private static float tempProfileEndTime = 0f;
 
     static GlobalVolumeManager()
     {
@@ -28,6 +40,26 @@ public static class GlobalVolumeManager
         {
             Debug.LogWarning("Sylodastic VolumeProfile not found in Resources folder");
         }
+
+        // Find or create the blend volume (hidden in hierarchy)
+        if (blendVolumeGO == null)
+        {
+            blendVolumeGO = GameObject.Find("GlobalVolumeBlendHelper");
+            if (blendVolumeGO == null)
+            {
+                blendVolumeGO = new GameObject("GlobalVolumeBlendHelper");
+                blendVolumeGO.hideFlags = HideFlags.HideAndDontSave;
+                blendVolume = blendVolumeGO.AddComponent<Volume>();
+                blendVolume.isGlobal = true;
+                blendVolume.priority = 1001; // Higher than main global volume
+                blendVolume.weight = 0f;
+                blendVolume.enabled = false;
+            }
+            else
+            {
+                blendVolume = blendVolumeGO.GetComponent<Volume>();
+            }
+        }
     }
 
     public static void SetProfile(string profileName)
@@ -42,33 +74,148 @@ public static class GlobalVolumeManager
             }
         }
 
+        VolumeProfile targetProfile = null;
         switch (profileName.ToLower())
         {
             case "sylodastic":
-                if (sylodasticProfileAsset != null)
-                {
-                    globalVolume.profile = sylodasticProfileAsset;
-                    Debug.Log("GlobalVolumeManager: Switched to Sylodastic profile asset.");
-                }
-                else
-                {
-                    Debug.LogWarning("Sylodastic profile asset is null.");
-                }
+                targetProfile = sylodasticProfileAsset;
                 break;
             case "default":
-                if (defaultProfileAsset != null)
-                {
-                    globalVolume.profile = defaultProfileAsset;
-                    Debug.Log("GlobalVolumeManager: Restored default profile asset.");
-                }
-                else
-                {
-                    Debug.LogWarning("Default profile asset is null.");
-                }
+                targetProfile = defaultProfileAsset;
                 break;
             default:
                 Debug.LogWarning($"Unknown profile: {profileName}");
-                break;
+                return;
         }
+
+        if (targetProfile == null)
+        {
+            Debug.LogWarning($"{profileName} profile asset is null.");
+            return;
+        }
+
+        // Start smooth transition
+        if (globalVolume.profile == targetProfile)
+        {
+            Debug.Log("GlobalVolumeManager: Already using target profile.");
+            return;
+        }
+
+        // If running in play mode, use coroutine for smooth blend
+        if (Application.isPlaying)
+        {
+            MonoBehaviour runner = GetRunner();
+            if (runner != null)
+            {
+                if (currentBlendCoroutine != null)
+                {
+                    runner.StopCoroutine(currentBlendCoroutine);
+                }
+                currentBlendCoroutine = runner.StartCoroutine(BlendToProfile(targetProfile, blendDuration));
+            }
+            else
+            {
+                // Fallback: instant switch
+                globalVolume.profile = targetProfile;
+            }
+        }
+        else
+        {
+            // In edit mode, just switch instantly
+            globalVolume.profile = targetProfile;
+        }
+    }
+
+    // Helper to get a MonoBehaviour to run coroutines
+    private static MonoBehaviour GetRunner()
+    {
+        // Try to find any active MonoBehaviour in the scene
+        var go = GameObject.FindObjectOfType<MonoBehaviour>();
+        return go;
+    }
+
+    private static IEnumerator BlendToProfile(VolumeProfile targetProfile, float duration)
+    {
+        if (blendVolume == null)
+            Initialize();
+
+        // Setup blend volume
+        blendVolume.profile = targetProfile;
+        blendVolume.weight = 0f;
+        blendVolume.enabled = true;
+
+        float startTime = Time.time;
+        float endTime = startTime + duration;
+
+        // Store original profile for reference
+        VolumeProfile originalProfile = globalVolume.profile;
+
+        // Blend weight from 0 to 1
+        while (Time.time < endTime)
+        {
+            float t = (Time.time - startTime) / duration;
+            blendVolume.weight = t;
+            globalVolume.weight = 1f - t;
+            yield return null;
+        }
+
+        // Finish blend
+        blendVolume.weight = 0f;
+        blendVolume.enabled = false;
+        globalVolume.weight = 1f;
+        globalVolume.profile = targetProfile;
+        Debug.Log("GlobalVolumeManager: Smooth transition complete.");
+    }
+
+    public static void SetProfileTemporary(string profileName, float duration)
+    {
+        if (globalVolume == null)
+        {
+            Initialize();
+            if (globalVolume == null)
+            {
+                Debug.LogError("No global Volume found in scene");
+                return;
+            }
+        }
+
+        MonoBehaviour runner = GetRunner();
+        if (runner == null)
+        {
+            Debug.LogError("No MonoBehaviour found to run coroutine for temporary profile switch.");
+            return;
+        }
+
+        // If already running, extend the timer if needed
+        if (tempProfileCoroutine != null && tempProfileEndTime > Time.time)
+        {
+            tempProfileEndTime = Mathf.Max(tempProfileEndTime, Time.time + duration);
+            Debug.Log($"GlobalVolumeManager: Extended temporary profile '{profileName}' for {duration} more seconds.");
+            return;
+        }
+
+        // Store the current profile name to revert to
+        lastProfileName = (globalVolume.profile == sylodasticProfileAsset) ? "sylodastic" : "default";
+        tempProfileEndTime = Time.time + duration;
+
+        // Start coroutine to handle timed revert
+        if (tempProfileCoroutine != null)
+            runner.StopCoroutine(tempProfileCoroutine);
+        tempProfileCoroutine = runner.StartCoroutine(TempProfileRoutine(profileName, duration));
+    }
+
+    private static IEnumerator TempProfileRoutine(string profileName, float duration)
+    {
+        SetProfile(profileName);
+        Debug.Log($"GlobalVolumeManager: Switched to '{profileName}' profile for {duration} seconds.");
+
+        while (Time.time < tempProfileEndTime)
+        {
+            yield return null;
+        }
+
+        Debug.Log($"GlobalVolumeManager: Reverting to '{lastProfileName}' profile.");
+        SetProfile(lastProfileName);
+        tempProfileCoroutine = null;
     }
 }
