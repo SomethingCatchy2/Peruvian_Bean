@@ -25,12 +25,16 @@ PrefabInstance:
       value: Sylodastic Shroom
       objectReference: {fileID: 0}
     - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
+      propertyPath: healAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: isSylodastic
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: sylodasticDuration
-      value: 4
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2324254347045152526, guid: 47f152b380f48aa48b612628d5b53c02, type: 3}
       propertyPath: volumeProfileNameOnCollect

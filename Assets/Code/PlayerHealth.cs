@@ -81,7 +81,7 @@ public class PlayerHealth : MonoBehaviour
         // Notify listeners
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
         
-        // Check for death
+        // Check for death 
         if (currentHealth <= 0f && !isDead)
         {
             Die();

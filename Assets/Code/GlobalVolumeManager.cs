@@ -17,7 +17,8 @@ public static class GlobalVolumeManager
 
     // For temporary profile switching
     private static Coroutine tempProfileCoroutine;
-    private static string lastProfileName = "default";
+    // Remove lastProfileName, use a bool instead
+    private static bool isSylodasticActive = false;
     private static float tempProfileEndTime = 0f;
 
     static GlobalVolumeManager()
@@ -186,36 +187,46 @@ public static class GlobalVolumeManager
             return;
         }
 
-        // If already running, extend the timer if needed
-        if (tempProfileCoroutine != null && tempProfileEndTime > Time.time)
+        // Only allow Sylodastic as a temporary profile for now
+        bool isSylodasticRequest = profileName.ToLower() == "sylodastic";
+
+        // If already running Sylodastic, extend the timer
+        if (isSylodasticRequest && isSylodasticActive)
         {
             tempProfileEndTime = Mathf.Max(tempProfileEndTime, Time.time + duration);
-            Debug.Log($"GlobalVolumeManager: Extended temporary profile '{profileName}' for {duration} more seconds.");
+            Debug.Log($"GlobalVolumeManager: Extended temporary profile 'Sylodastic' for {duration} more seconds.");
             return;
         }
 
-        // Store the current profile name to revert to
-        lastProfileName = (globalVolume.profile == sylodasticProfileAsset) ? "sylodastic" : "default";
-        tempProfileEndTime = Time.time + duration;
-
-        // Start coroutine to handle timed revert
+        // If a temp profile coroutine is running, stop it (to reset timer and logic)
         if (tempProfileCoroutine != null)
             runner.StopCoroutine(tempProfileCoroutine);
+
+        // Set state and start coroutine
+        isSylodasticActive = isSylodasticRequest;
+        tempProfileEndTime = Time.time + duration;
         tempProfileCoroutine = runner.StartCoroutine(TempProfileRoutine(profileName, duration));
     }
 
     private static IEnumerator TempProfileRoutine(string profileName, float duration)
     {
+        // Only handle Sylodastic as a temp profile
         SetProfile(profileName);
         Debug.Log($"GlobalVolumeManager: Switched to '{profileName}' profile for {duration} seconds.");
 
+        // Wait until timer expires (can be extended)
         while (Time.time < tempProfileEndTime)
         {
             yield return null;
         }
 
-        Debug.Log($"GlobalVolumeManager: Reverting to '{lastProfileName}' profile.");
-        SetProfile(lastProfileName);
+        // Always revert to default after Sylodastic
+        if (profileName.ToLower() == "sylodastic")
+        {
+            Debug.Log($"GlobalVolumeManager: Reverting to 'default' profile.");
+            SetProfile("default");
+            isSylodasticActive = false;
+        }
         tempProfileCoroutine = null;
     }
 }

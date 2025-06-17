@@ -63,7 +63,20 @@ public class Player_Move : MonoBehaviour
 
     [Header("Damage System")]
     private Hurt currentHurtObject = null;     // Reference to the hurt object we're touching
-    private float damageTimer = 0f;
+
+    [Header("Invincibility Frames")]
+    public float invincibilityDuration = 1.0f; // Duration of i-frames after being hit
+    private bool isInvincible = false;
+    private float invincibilityTimer = 0f;
+
+    [Header("I-Frame Visuals")]
+    public SpriteRenderer playerSprite; // Assign in inspector (player's main SpriteRenderer)
+    public Color iFramePulseColor = Color.black; // Color to pulse to during I-frames
+    public float iFramePulseSpeed = 10f; // How fast to pulse (higher = faster)
+    public int iFramePulseCount = 4; // How many pulses during I-frames
+
+    private Coroutine iFramePulseCoroutine;
+    private Color originalSpriteColor;
 
     void Start()
     {
@@ -83,6 +96,12 @@ public class Player_Move : MonoBehaviour
         // Make sure collection prompt is hidden initially
         if (collectPrompt != null)
             collectPrompt.SetActive(false);
+
+        // Cache original color
+        if (playerSprite == null)
+            playerSprite = GetComponentInChildren<SpriteRenderer>();
+        if (playerSprite != null)
+            originalSpriteColor = playerSprite.color;
     }
 
     void Update()
@@ -154,52 +173,21 @@ public class Player_Move : MonoBehaviour
             }
         }
 
-        // Damage over time when touching hurt objects
-        if (currentHurtObject != null && playerHealth != null && !playerHealth.isDead)
+        // Invincibility frame timer
+        if (isInvincible)
         {
-            damageTimer += Time.deltaTime;
-            if (damageTimer >= currentHurtObject.damageInterval)
+            invincibilityTimer -= Time.deltaTime;
+            if (invincibilityTimer <= 0f)
             {
-                float damageAmount = currentHurtObject.damagePerSecond * currentHurtObject.damageInterval;
-                playerHealth.TakeDamage(damageAmount);
-                damageTimer = 0f;
-                Debug.Log($"Taking {damageAmount} damage from {currentHurtObject.damageSource}");
-                
-                // Destroy the hurt object if specified
-                if (currentHurtObject.destroyOnContact)
+                isInvincible = false;
+                // End pulse effect
+                if (iFramePulseCoroutine != null)
                 {
-                    GameObject objectToDestroy = currentHurtObject.gameObject;
-                    currentHurtObject = null;
-                    Destroy(objectToDestroy);
+                    StopCoroutine(iFramePulseCoroutine);
+                    iFramePulseCoroutine = null;
                 }
-            }
-        }
-
-        // Debug light controls
-        if (enableLightDebug && playerHealth != null)
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                playerHealth.TakeDamage(1f);
-                Debug.Log("Debug: Took 1 damage");
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                playerHealth.Heal(1f);
-                Debug.Log("Debug: Healed 1 health");
-            }
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                var light = playerHealth.playerLight;
-                if (light != null)
-                {
-                    Debug.Log($"Light Intensity: {light.intensity}, Shadow Intensity: {light.shadowIntensity}");
-                    Debug.Log($"Light Enabled: {light.enabled}, GameObject Active: {light.gameObject.activeInHierarchy}");
-                }
-                else
-                {
-                    Debug.Log("Light component is null!");
-                }
+                if (playerSprite != null)
+                    playerSprite.color = originalSpriteColor;
             }
         }
 
@@ -375,7 +363,59 @@ public class Player_Move : MonoBehaviour
         if (hurtComponent != null)
         {
             currentHurtObject = hurtComponent;
-            damageTimer = 0f; // Reset timer when first touching
+            if (!isInvincible && playerHealth != null && !playerHealth.isDead)
+            {
+                playerHealth.TakeDamage(hurtComponent.damagePerSecond);
+                isInvincible = true;
+                invincibilityTimer = invincibilityDuration;
+
+                // Start pulse effect
+                if (iFramePulseCoroutine != null)
+                    StopCoroutine(iFramePulseCoroutine);
+                if (playerSprite != null)
+                    iFramePulseCoroutine = StartCoroutine(IFramePulseRoutine());
+
+                Debug.Log($"Player hit by {hurtComponent.damageSource}, now invincible for {invincibilityDuration} seconds.");
+
+                // Destroy the hurt object if specified
+                if (hurtComponent.destroyOnContact)
+                {
+                    GameObject objectToDestroy = hurtComponent.gameObject;
+                    currentHurtObject = null;
+                    Destroy(objectToDestroy);
+                }
+            }
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D other)
+    {
+        // Optional: If you want to allow repeated damage after i-frames expire while still in contact
+        Hurt hurtComponent = other.GetComponent<Hurt>();
+        if (hurtComponent != null)
+        {
+            currentHurtObject = hurtComponent;
+            if (!isInvincible && playerHealth != null && !playerHealth.isDead)
+            {
+                playerHealth.TakeDamage(hurtComponent.damagePerSecond);
+                isInvincible = true;
+                invincibilityTimer = invincibilityDuration;
+
+                // Start pulse effect
+                if (iFramePulseCoroutine != null)
+                    StopCoroutine(iFramePulseCoroutine);
+                if (playerSprite != null)
+                    iFramePulseCoroutine = StartCoroutine(IFramePulseRoutine());
+
+                Debug.Log($"Player hit by {hurtComponent.damageSource} (OnTriggerStay2D), now invincible for {invincibilityDuration} seconds.");
+
+                if (hurtComponent.destroyOnContact)
+                {
+                    GameObject objectToDestroy = hurtComponent.gameObject;
+                    currentHurtObject = null;
+                    Destroy(objectToDestroy);
+                }
+            }
         }
     }
 
@@ -401,7 +441,7 @@ public class Player_Move : MonoBehaviour
         if (hurtComponent != null && currentHurtObject == hurtComponent)
         {
             currentHurtObject = null;
-            damageTimer = 0f; // Reset timer when leaving
+            // damageTimer = 0f; // Remove timer reset
         }
     }
     
@@ -435,5 +475,39 @@ public class Player_Move : MonoBehaviour
         {
             playerHealth.Heal(healAmount);
         }
+    }
+
+    private IEnumerator IFramePulseRoutine()
+    {
+        if (playerSprite == null)
+            yield break;
+
+        float totalTime = invincibilityDuration;
+        float pulseTime = totalTime / Mathf.Max(1, iFramePulseCount * 2);
+        float elapsed = 0f;
+        int pulse = 0;
+        while (elapsed < totalTime)
+        {
+            // Pulse to color and back
+            float t = 0f;
+            while (t < 1f && elapsed < totalTime)
+            {
+                t += Time.deltaTime / pulseTime;
+                playerSprite.color = Color.Lerp(originalSpriteColor, iFramePulseColor, Mathf.SmoothStep(0f, 1f, t));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            t = 0f;
+            while (t < 1f && elapsed < totalTime)
+            {
+                t += Time.deltaTime / pulseTime;
+                playerSprite.color = Color.Lerp(iFramePulseColor, originalSpriteColor, Mathf.SmoothStep(0f, 1f, t));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            pulse++;
+        }
+        playerSprite.color = originalSpriteColor;
+        iFramePulseCoroutine = null;
     }
 }
