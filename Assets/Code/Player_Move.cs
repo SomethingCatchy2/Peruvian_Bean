@@ -444,6 +444,37 @@ public class Player_Move : MonoBehaviour
             // damageTimer = 0f; // Remove timer reset
         }
     }
+
+    // Add this new method to handle particle collisions
+    void OnParticleCollision(GameObject other)
+    {
+        // Get the Hurt component from the particle system's GameObject
+        Hurt hurtComponent = other.GetComponentInParent<Hurt>();
+
+        // Check if the object that hit us has a Hurt component and we are not invincible
+        if (hurtComponent != null && !isInvincible && playerHealth != null && !playerHealth.isDead)
+        {
+            // Apply damage. For particles, damagePerSecond is treated as damage-per-particle-hit.
+            playerHealth.TakeDamage(hurtComponent.damagePerSecond);
+            isInvincible = true;
+            invincibilityTimer = invincibilityDuration;
+
+            // Start the invincibility visual effect
+            if (iFramePulseCoroutine != null)
+                StopCoroutine(iFramePulseCoroutine);
+            if (playerSprite != null)
+                iFramePulseCoroutine = StartCoroutine(IFramePulseRoutine());
+
+            Debug.Log($"Player hit by particle from {hurtComponent.damageSource}, now invincible for {invincibilityDuration} seconds.");
+
+            // This part is usually not needed for particle effects like sludge,
+            // as it would destroy the entire emitter.
+            if (hurtComponent.destroyOnContact)
+            {
+                Destroy(other);
+            }
+        }
+    }
     
     // Add this method to track mushroom collection
     public void AddMushroom()

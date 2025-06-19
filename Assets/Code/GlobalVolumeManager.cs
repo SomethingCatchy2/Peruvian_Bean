@@ -29,7 +29,7 @@ public static class GlobalVolumeManager
     private static void Initialize()
     {
         // Find the global volume in the scene
-        globalVolume = Object.FindObjectOfType<Volume>();
+        globalVolume = Object.FindFirstObjectByType<Volume>();
         if (globalVolume != null && globalVolume.isGlobal)
         {
             defaultProfileAsset = globalVolume.profile;
@@ -131,7 +131,7 @@ public static class GlobalVolumeManager
     private static MonoBehaviour GetRunner()
     {
         // Try to find any active MonoBehaviour in the scene
-        var go = GameObject.FindObjectOfType<MonoBehaviour>();
+        var go = Object.FindAnyObjectByType<MonoBehaviour>();
         return go;
     }
 
