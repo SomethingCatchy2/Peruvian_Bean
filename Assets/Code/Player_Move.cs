@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
+using UnityEngine.InputSystem;
+using JetBrains.Annotations;
 
 public class Player_Move : MonoBehaviour
 {
@@ -78,9 +80,23 @@ public class Player_Move : MonoBehaviour
     private Coroutine iFramePulseCoroutine;
     private Color originalSpriteColor;
 
+    [Header("Particle Attack")]
+    public ParticleSystem attackParticlePrefab; // Assign in inspector
+    public float attackCooldown = 1.0f; // Cooldown in seconds
+    private float attackCooldownTimer = 0f;
+    public Transform attackSpawnPoint; // Assign in inspector (where the attack spawns)
+
+    // Freeze Settings
+    [Header("Freeze Settings")]
+    public float freezeDuration = 0.5f; // Duration in seconds for freeze
+    private float freezeTimer = 0f;
+    public bool isFrozen = false;
+    private float originalGravityScale = 2;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        originalGravityScale = rb.gravityScale; // Cache original gravity scale
         
         // Get health component
         playerHealth = GetComponent<PlayerHealth>();
@@ -106,75 +122,24 @@ public class Player_Move : MonoBehaviour
 
     void Update()
     {
-        // Enhanced controller debugging
-        if (debugControllerInput)
+        // Handle freeze timer
+        if (isFrozen)
         {
-            // Check button presses (digital inputs)
-            for (int i = 0; i < 20; i++)
+            freezeTimer -= Time.deltaTime;
+            if (freezeTimer <= 0f || !isFrozen)
             {
-                if (Input.GetKeyDown((KeyCode)(KeyCode.JoystickButton0 + i)))
-                {
-                    Debug.Log($"Controller button pressed: JoystickButton{i}");
-                }
+                isFrozen = false;
+                rb.gravityScale = originalGravityScale; // Restore gravity
+                playerHealth.TakeDamage(0.4f);
             }
-            
-            // Check axes (analog inputs) every 1 second to avoid log spam
-            if (Time.time - lastInputCheckTime > 1f)
+            else
             {
-                lastInputCheckTime = Time.time;
-                
-                // Check all possible joystick axes
-                string[] axisNames = {"Horizontal", "Vertical", 
-                                     "3rd axis", "4th axis", "5th axis", "6th axis", 
-                                     "7th axis", "8th axis", "9th axis", "10th axis"};
-                
-                StringBuilder axisInfo = new StringBuilder("Controller axes values:\n");
-                bool hasActiveAxis = false;
-                
-                foreach (string axis in axisNames)
-                {
-                    try {
-                        float value = Input.GetAxis(axis);
-                        
-                        // Only log axes that have values or have changed
-                        if (Mathf.Abs(value) > 0.1f || 
-                            (lastInputValues.ContainsKey(axis) && Mathf.Abs(value - lastInputValues[axis]) > 0.1f))
-                        {
-                            axisInfo.AppendLine($"- {axis}: {value:F2}");
-                            hasActiveAxis = true;
-                        }
-                        
-                        lastInputValues[axis] = value;
-                    }
-                    catch {
-                        // Ignore invalid axes
-                    }
-                }
-                
-                if (hasActiveAxis)
-                {
-                    Debug.Log(axisInfo.ToString());
-                    
-                    // Debug info about connected joysticks
-                    string[] joysticks = Input.GetJoystickNames();
-                    if (joysticks.Length > 0)
-                    {
-                        Debug.Log($"Connected controllers ({joysticks.Length}):");
-                        for (int i = 0; i < joysticks.Length; i++)
-                        {
-                            Debug.Log($"- Controller {i}: \"{joysticks[i]}\"");
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("No controllers detected by Unity!");
-                    }
-                }
+                rb.linearVelocity = Vector2.zero;
+                return; // Skip all other updates if frozen
             }
         }
 
-        // Invincibility frame timer
-        if (isInvincible)
+        if (invincibilityTimer > 0f)
         {
             invincibilityTimer -= Time.deltaTime;
             if (invincibilityTimer <= 0f)
@@ -340,6 +305,42 @@ public class Player_Move : MonoBehaviour
         else
         {
             footstepTimer = 0f;
+        }
+
+        // Particle Attack Cooldown Timer
+        if (attackCooldownTimer > 0f)
+            attackCooldownTimer -= Time.deltaTime;
+
+        // --- Particle Attack Input ---
+        bool attackKey = Input.GetKeyDown(KeyCode.C);
+        // Nintendo Switch Pro Controller: Y is JoystickButton2 (Unity default mapping)
+        bool attackButton = Input.GetKeyDown(KeyCode.JoystickButton2);
+        
+        // Test freeze with F key (for debugging)
+        // if (Input.GetKeyDown(KeyCode.F))
+        // {
+        //     FreezePlayer(freezeDuration);
+        //     Debug.Log($"Player frozen for {freezeDuration} seconds");
+        // }
+
+        if ((attackKey || attackButton) && attackCooldownTimer <= 0f && attackParticlePrefab != null)
+        {
+            Vector2 attackDir = GetAttackDirection();
+            if (attackDir == Vector2.zero)
+            {
+                // Default to facing direction based on sprite orientation
+                if (transform.localScale.x > 0)
+                    attackDir = Vector2.left;
+                else
+                    attackDir = Vector2.right;
+            }
+            FireParticleAttack(attackDir);
+            attackCooldownTimer = attackCooldown;
+
+            // Freeze player after attack
+            FreezePlayer(freezeDuration);
+            
+            
         }
     }
 
@@ -540,5 +541,50 @@ public class Player_Move : MonoBehaviour
         }
         playerSprite.color = originalSpriteColor;
         iFramePulseCoroutine = null;
+    }
+
+    // Returns normalized attack direction from right stick or arrow keys
+    private Vector2 GetAttackDirection()
+    {
+        // Use Input System Gamepad right stick if available
+        Vector2 stickInput = Vector2.zero;
+        if (Gamepad.current != null)
+        {
+            stickInput = Gamepad.current.rightStick.ReadValue();
+            if (stickInput.magnitude > 0.2f)
+                return stickInput.normalized;
+        }
+         // Arrow keys fallback
+         float ax = 0f, ay = 0f;
+         if (Input.GetKey(KeyCode.UpArrow)) ay += 1f;
+         if (Input.GetKey(KeyCode.DownArrow)) ay -= 1f;
+         if (Input.GetKey(KeyCode.LeftArrow)) ax -= 1f;
+         if (Input.GetKey(KeyCode.RightArrow)) ax += 1f;
+         if (ax != 0f || ay != 0f)
+            return new Vector2(ax, ay).normalized;
+         return Vector2.zero;
+     }
+
+    // Spawns and fires the attack particle system in the given direction
+    private void FireParticleAttack(Vector2 dir)
+    {
+        if (attackParticlePrefab == null) return;
+        Vector3 spawnPos = attackSpawnPoint != null ? attackSpawnPoint.position : transform.position;
+        ParticleSystem attack = Instantiate(attackParticlePrefab, spawnPos, Quaternion.identity);
+        // Rotate to direction (add 180° because prefab faces left by default)
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + 180f;
+        attack.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        attack.Play();
+        // Optionally destroy after duration
+        Destroy(attack.gameObject, attack.main.duration + attack.main.startLifetime.constantMax);
+    }
+
+    // Method to freeze the player for a specified duration
+    public void FreezePlayer(float duration)
+    {
+        freezeTimer = duration;
+        isFrozen = true;
+        rb.linearVelocity = Vector2.zero;
+        rb.gravityScale = 0f;
     }
 }
